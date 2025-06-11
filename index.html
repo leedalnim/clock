@@ -254,11 +254,55 @@
         .number:nth-child(2) { top: 50%; right: 15px; } /* 3 */
         .number:nth-child(3) { bottom: 15px; left: 50%; } /* 6 */
         .number:nth-child(4) { top: 50%; left: 15px; } /* 9 */
+
+        .settings-toggle {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .settings-toggle:hover {
+            transform: scale(1.1);
+        }
+        body.light .settings-toggle {
+            background: rgba(0,0,0,0.5);
+            border-color: rgba(0,0,0,0.3);
+            color: #ffffff;
+        }
+        #settingsPanel {
+            background: rgba(245,245,245,0.98);
+            color: #222;
+        }
+        body:not(.light) #settingsPanel {
+            background: rgba(30,30,46,0.98);
+            color: #fff;
+        }
+        #settingsPanel input[type="time"] {
+            font-size: 1em;
+        }
+        #settingsPanel button[onclick*='toggleSettings'] {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            color: inherit;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="clock-container">
-        <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+        <div style="position: absolute; top: -20px; left: -20px; display: flex; gap: 8px;">
+            <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+            <button class="settings-toggle" onclick="toggleSettings()">⚙️</button>
+        </div>
         
         <div class="clock">
             <div class="clock-face">
@@ -347,6 +391,23 @@
                 <span id="workTimeProgressPercent" style="font-size: 0.85em; color: #e74c3c; min-width: 32px; text-align: right;"></span>
             </div>
         </div>
+
+        <!-- 세팅 패널 -->
+        <div id="settingsPanel" style="display:none; position: absolute; top: 40px; left: 0; right: 0; margin: 0 auto; width: 260px; background: rgba(30,30,46,0.98); border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); padding: 22px 18px 16px 18px; z-index: 100; color: #fff;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-weight: bold; font-size: 1.1em;">출퇴근 시간 설정</span>
+                <button onclick="toggleSettings()" style="background: none; border: none; font-size: 1.2em; color: #fff; cursor: pointer;">✖️</button>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="startTimeInput" style="font-size: 0.98em;">출근 시간:</label>
+                <input type="time" id="startTimeInput" style="margin-left: 8px; padding: 2px 6px; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+            <div style="margin-bottom: 18px;">
+                <label for="endTimeInput" style="font-size: 0.98em;">퇴근 시간:</label>
+                <input type="time" id="endTimeInput" style="margin-left: 8px; padding: 2px 6px; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+            <button onclick="saveWorkTimes()" style="width: 100%; background: #e74c3c; color: #fff; border: none; border-radius: 6px; padding: 7px 0; font-size: 1em; font-weight: bold; cursor: pointer;">저장</button>
+        </div>
     </div>
 
     <script>
@@ -387,13 +448,13 @@
         
         function updateWorkTime() {
             const now = new Date();
+            // localStorage에서 출퇴근 시간 불러오기
+            const {start, end} = getWorkTimesFromStorage();
+            const [startHour, startMinute] = start.split(':').map(Number);
+            const [endHour, endMinute] = end.split(':').map(Number);
+            const startTime = startHour * 3600 + startMinute * 60;
+            const endTime = endHour * 3600 + endMinute * 60;
             const currentTime = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-            
-            // 퇴근 시간 17:30 (5시 30분)
-            const endTime = 17 * 3600 + 30 * 60;
-            
-            // 출근 시간 08:30 (8시 30분)
-            const startTime = 8 * 3600 + 30 * 60;
             
             const workTimeElement = document.getElementById('workTimeRemaining');
             const emojiElement = document.getElementById('workTimeEmoji');
@@ -469,6 +530,38 @@
             } else {
                 button.textContent = '☀️';
             }
+        }
+        
+        // 세팅 패널 토글
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
+            if (panel.style.display === 'block') {
+                // 패널 열릴 때 input에 저장값 반영
+                const {start, end} = getWorkTimesFromStorage();
+                document.getElementById('startTimeInput').value = start;
+                document.getElementById('endTimeInput').value = end;
+            }
+        }
+
+        // 출퇴근 시간 저장 및 불러오기
+        function saveWorkTimes() {
+            const start = document.getElementById('startTimeInput').value;
+            const end = document.getElementById('endTimeInput').value;
+            if (!start || !end) {
+                alert('출근/퇴근 시간을 모두 입력하세요.');
+                return;
+            }
+            localStorage.setItem('workStartTime', start);
+            localStorage.setItem('workEndTime', end);
+            toggleSettings();
+            updateClock();
+        }
+
+        function getWorkTimesFromStorage() {
+            let start = localStorage.getItem('workStartTime') || '08:30';
+            let end = localStorage.getItem('workEndTime') || '17:30';
+            return {start, end};
         }
         
         // 초기 실행
