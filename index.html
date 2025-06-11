@@ -339,7 +339,12 @@
         
         <div class="work-time-container">
             <div class="work-time-title">남은시간</div>
+            <div id="workTimeEmoji" style="font-size: 2em; margin-bottom: 4px;"></div>
             <div class="work-time-remaining" id="workTimeRemaining">00시 00분 00초</div>
+            <div id="workTimeProgressBar" style="width: 100%; height: 8px; background: #3333; border-radius: 4px; margin: 6px 0 0 0; position: relative; display: none;">
+                <div id="workTimeProgressFill" style="height: 100%; background: #e74c3c; border-radius: 4px; width: 0%; transition: width 0.3s;"></div>
+                <span id="workTimeProgressPercent" style="position: absolute; right: 8px; top: -18px; font-size: 0.85em; color: #e74c3c;"></span>
+            </div>
         </div>
     </div>
 
@@ -390,6 +395,13 @@
             const startTime = 8 * 3600 + 30 * 60;
             
             const workTimeElement = document.getElementById('workTimeRemaining');
+            const emojiElement = document.getElementById('workTimeEmoji');
+            const progressBar = document.getElementById('workTimeProgressBar');
+            const progressFill = document.getElementById('workTimeProgressFill');
+            const progressPercent = document.getElementById('workTimeProgressPercent');
+            
+            // 진행률 계산용 변수
+            let progressPercentage = 0;
             
             if (currentTime < startTime) {
                 // 출근 전
@@ -399,6 +411,8 @@
                 const seconds = timeToStart % 60;
                 workTimeElement.textContent = `출근까지 ${String(hours).padStart(2, '0')}시 ${String(minutes).padStart(2, '0')}분 ${String(seconds).padStart(2, '0')}초`;
                 workTimeElement.className = 'work-time-remaining';
+                emojiElement.textContent = '🥱';
+                progressBar.style.display = 'none';
             } else if (currentTime >= startTime && currentTime < endTime) {
                 // 근무 시간 중
                 const timeToEnd = endTime - currentTime;
@@ -407,10 +421,37 @@
                 const seconds = timeToEnd % 60;
                 workTimeElement.textContent = `${String(hours).padStart(2, '0')}시 ${String(minutes).padStart(2, '0')}분 ${String(seconds).padStart(2, '0')}초`;
                 workTimeElement.className = 'work-time-remaining';
+                // 진행률 계산
+                const totalWorkSeconds = endTime - startTime;
+                const elapsedSeconds = currentTime - startTime;
+                progressPercentage = Math.min(100, Math.max(0, (elapsedSeconds / totalWorkSeconds) * 100));
+                progressBar.style.display = 'block';
+                progressFill.style.width = `${progressPercentage}%`;
+                progressPercent.textContent = `${Math.round(progressPercentage)}%`;
+                // 이모지 선택
+                if (hours >= 7) {
+                    emojiElement.textContent = '😩';
+                } else if (hours >= 6) {
+                    emojiElement.textContent = '😣';
+                } else if (hours >= 5) {
+                    emojiElement.textContent = '🥱';
+                } else if (hours >= 4) {
+                    emojiElement.textContent = '😔';
+                } else if (hours >= 3) {
+                    emojiElement.textContent = '😐';
+                } else if (hours >= 2) {
+                    emojiElement.textContent = '🙂';
+                } else if (hours >= 1) {
+                    emojiElement.textContent = '😉';
+                } else {
+                    emojiElement.textContent = '😁';
+                }
             } else {
                 // 퇴근 후
                 workTimeElement.textContent = '퇴근 완료!';
                 workTimeElement.className = 'work-time-remaining completed';
+                emojiElement.textContent = '🎉';
+                progressBar.style.display = 'none';
             }
         }
         
