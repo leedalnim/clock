@@ -34,16 +34,13 @@
         }
 
         .theme-toggle {
-            position: absolute;
-            top: -20px;
-            right: -20px;
             background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 26px;
+            height: 26px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 12px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
@@ -259,10 +256,10 @@
             background: rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.3);
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 26px;
+            height: 26px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -280,28 +277,30 @@
         #settingsPanel {
             background: rgba(245,245,245,0.98);
             color: #222;
+            font-size: 0.92em;
         }
         body:not(.light) #settingsPanel {
             background: rgba(30,30,46,0.98);
             color: #fff;
         }
         #settingsPanel input[type="time"] {
-            font-size: 1em;
+            font-size: 0.95em;
         }
         #settingsPanel button[onclick*='toggleSettings'] {
             background: none;
             border: none;
-            font-size: 1.2em;
+            font-size: 1em;
             color: inherit;
             cursor: pointer;
+            padding: 0 2px;
         }
     </style>
 </head>
 <body>
     <div class="clock-container">
-        <div style="position: absolute; top: -20px; left: -20px; display: flex; gap: 8px;">
-            <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+        <div style="position: absolute; top: -12px; left: -12px; display: flex; gap: 6px; z-index: 10;">
             <button class="settings-toggle" onclick="toggleSettings()">⚙️</button>
+            <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
         </div>
         
         <div class="clock">
@@ -393,20 +392,19 @@
         </div>
 
         <!-- 세팅 패널 -->
-        <div id="settingsPanel" style="display:none; position: absolute; top: 40px; left: 0; right: 0; margin: 0 auto; width: 260px; background: rgba(30,30,46,0.98); border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); padding: 22px 18px 16px 18px; z-index: 100; color: #fff;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span style="font-weight: bold; font-size: 1.1em;">출퇴근 시간 설정</span>
-                <button onclick="toggleSettings()" style="background: none; border: none; font-size: 1.2em; color: #fff; cursor: pointer;">✖️</button>
+        <div id="settingsPanel" style="display:none; position: absolute; top: 28px; left: 0; right: 0; margin: 0 auto; width: 150px; background: rgba(30,30,46,0.98); border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); padding: 10px 10px 8px 10px; z-index: 100; color: #fff; font-size: 0.92em;">
+            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 6px;">
+                <button onclick="toggleSettings()" style="background: none; border: none; font-size: 1em; color: #fff; cursor: pointer; padding: 0 2px;">✖️</button>
             </div>
-            <div style="margin-bottom: 10px;">
-                <label for="startTimeInput" style="font-size: 0.98em;">출근 시간:</label>
-                <input type="time" id="startTimeInput" style="margin-left: 8px; padding: 2px 6px; border-radius: 4px; border: 1px solid #ccc;">
+            <div style="margin-bottom: 6px; display: flex; align-items: center;">
+                <label for="startTimeInput" style="font-size: 0.95em; min-width: 36px;">출근:</label>
+                <input type="time" id="startTimeInput" style="margin-left: 4px; padding: 1px 3px; border-radius: 3px; border: 1px solid #ccc; font-size: 0.95em; width: 70px;">
             </div>
-            <div style="margin-bottom: 18px;">
-                <label for="endTimeInput" style="font-size: 0.98em;">퇴근 시간:</label>
-                <input type="time" id="endTimeInput" style="margin-left: 8px; padding: 2px 6px; border-radius: 4px; border: 1px solid #ccc;">
+            <div style="margin-bottom: 10px; display: flex; align-items: center;">
+                <label for="endTimeInput" style="font-size: 0.95em; min-width: 36px;">퇴근:</label>
+                <input type="time" id="endTimeInput" style="margin-left: 4px; padding: 1px 3px; border-radius: 3px; border: 1px solid #ccc; font-size: 0.95em; width: 70px;">
             </div>
-            <button onclick="saveWorkTimes()" style="width: 100%; background: #e74c3c; color: #fff; border: none; border-radius: 6px; padding: 7px 0; font-size: 1em; font-weight: bold; cursor: pointer;">저장</button>
+            <button onclick="saveWorkTimes()" style="width: 100%; background: #e74c3c; color: #fff; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.95em; font-weight: bold; cursor: pointer;">저장</button>
         </div>
     </div>
 
