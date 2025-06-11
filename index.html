@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아날로그 시계</title>
+    <link href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Asta Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #1a1a2e;
+            color: #ffffff;
+        }
+
+        body.light {
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        .clock-container {
+            position: relative;
+            text-align: center;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        body.light .theme-toggle {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .clock {
+            width: 188px;
+            height: 188px;
+            border-radius: 50%;
+            border: 1px solid #ffffff;
+            position: relative;
+            margin: 0 auto 30px;
+            transition: all 0.3s ease;
+        }
+
+        body.light .clock {
+            border-color: #333333;
+        }
+
+        .clock-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hour-marker {
+            position: absolute;
+            width: 3px;
+            height: 15px;
+            background: #ffffff;
+            top: 6px;
+            left: 50%;
+            transform-origin: 50% 88px;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        body.light .hour-marker {
+            background: #333333;
+        }
+
+        .minute-marker {
+            position: absolute;
+            width: 1px;
+            height: 9px;
+            background: #cccccc;
+            top: 9px;
+            left: 50%;
+            transform-origin: 50% 85px;
+            transform: translateX(-50%);
+            border-radius: 1px;
+        }
+
+        body.light .minute-marker {
+            background: #666666;
+        }
+
+        .hand {
+            position: absolute;
+            left: 50%;
+            bottom: 50%;
+            transform-origin: 50% 100%;
+            border-radius: 10px;
+            transition: transform 0.1s ease-out;
+        }
+
+        .hour-hand {
+            width: 5px;
+            height: 53px;
+            background: #ffffff;
+            margin-left: -2.5px;
+            z-index: 3;
+        }
+
+        body.light .hour-hand {
+            background: #333333;
+        }
+
+        .minute-hand {
+            width: 3px;
+            height: 68px;
+            background: #ffffff;
+            margin-left: -1.5px;
+            z-index: 2;
+        }
+
+        body.light .minute-hand {
+            background: #333333;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 75px;
+            background: #e74c3c;
+            margin-left: -1px;
+            z-index: 4;
+        }
+
+        .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: #e74c3c;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+        .digital-time {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-family: 'Asta Sans', sans-serif;
+            letter-spacing: -0.5px;
+        }
+
+        body.light .digital-time {
+            color: #333333;
+        }
+
+        .digital-date {
+            text-align: center;
+            font-size: 18px;
+            color: #cccccc;
+            margin-bottom: 25px;
+            margin-top: 8px;
+            font-family: 'Asta Sans', sans-serif;
+            letter-spacing: -0.3px;
+        }
+
+        body.light .digital-date {
+            color: #666666;
+        }
+
+        .work-time-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 12px;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.light .work-time-container {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .work-time-title {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            font-family: 'Asta Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        body.light .work-time-title {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .work-time-remaining {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e74c3c;
+            font-family: 'Asta Sans', sans-serif;
+            letter-spacing: -0.3px;
+        }
+
+        .work-time-remaining.completed {
+            color: #27ae60;
+        }
+
+        .number {
+            position: absolute;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            transform: translate(-50%, -50%);
+            font-family: 'Asta Sans', sans-serif;
+        }
+
+        body.light .number {
+            color: #333333;
+        }
+
+        /* 시계 숫자 위치 */
+        .number:nth-child(1) { top: 15px; left: 50%; } /* 12 */
+        .number:nth-child(2) { top: 50%; right: 15px; } /* 3 */
+        .number:nth-child(3) { bottom: 15px; left: 50%; } /* 6 */
+        .number:nth-child(4) { top: 50%; left: 15px; } /* 9 */
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+        
+        <div class="clock">
+            <div class="clock-face">
+                <!-- 시간 마커 -->
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(0deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(30deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(60deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(90deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(120deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(150deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(180deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(210deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(240deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(270deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(300deg);"></div>
+                <div class="hour-marker" style="transform: translateX(-50%) rotate(330deg);"></div>
+
+                <!-- 분 마커 -->
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(6deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(12deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(18deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(24deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(36deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(42deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(48deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(54deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(66deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(72deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(78deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(84deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(96deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(102deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(108deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(114deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(126deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(132deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(138deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(144deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(156deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(162deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(168deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(174deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(186deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(192deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(198deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(204deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(216deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(222deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(228deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(234deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(246deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(252deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(258deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(264deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(276deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(282deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(288deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(294deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(306deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(312deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(318deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(324deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(336deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(342deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(348deg);"></div>
+                <div class="minute-marker" style="transform: translateX(-50%) rotate(354deg);"></div>
+
+                <!-- 시계 바늘 -->
+                <div class="hand hour-hand" id="hourHand"></div>
+                <div class="hand minute-hand" id="minuteHand"></div>
+                <div class="hand second-hand" id="secondHand"></div>
+                <div class="center-dot"></div>
+            </div>
+        </div>
+
+        <div class="digital-time" id="digitalTime">오후 00시 00분</div>
+        <div class="digital-date" id="digitalDate">2025년 6월 11일 수요일</div>
+        
+        <div class="work-time-container">
+            <div class="work-time-title">남은시간</div>
+            <div class="work-time-remaining" id="workTimeRemaining">00시 00분 00초</div>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            
+            // 시, 분, 초 가져오기
+            const hours = now.getHours() % 12;
+            const seconds = now.getSeconds();
+            
+            // 각도 계산 (분침 제거)
+            const hourAngle = (hours * 30) + (now.getMinutes() * 0.5); // 시간바늘
+            const secondAngle = seconds * 6; // 초바늘
+            
+            // 바늘 회전
+            document.getElementById('hourHand').style.transform = `rotate(${hourAngle}deg)`;
+            document.getElementById('secondHand').style.transform = `rotate(${secondAngle}deg)`;
+            
+            // 디지털 시간 업데이트
+            const digitalHours = now.getHours();
+            const digitalMinutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = digitalHours >= 12 ? '오후' : '오전';
+            const displayHours = digitalHours === 0 ? 12 : digitalHours > 12 ? digitalHours - 12 : digitalHours;
+            document.getElementById('digitalTime').textContent = `${ampm} ${String(displayHours).padStart(2, '0')}시 ${digitalMinutes}분`;
+            
+            // 날짜 업데이트
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const date = now.getDate();
+            const dayNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+            const dayName = dayNames[now.getDay()];
+            
+            document.getElementById('digitalDate').textContent = `${year}년 ${month}월 ${date}일 ${dayName}`;
+            
+            // 퇴근 시간 계산
+            updateWorkTime();
+        }
+        
+        function updateWorkTime() {
+            const now = new Date();
+            const currentTime = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+            
+            // 퇴근 시간 17:30 (5시 30분)
+            const endTime = 17 * 3600 + 30 * 60;
+            
+            // 출근 시간 08:30 (8시 30분)
+            const startTime = 8 * 3600 + 30 * 60;
+            
+            const workTimeElement = document.getElementById('workTimeRemaining');
+            
+            if (currentTime < startTime) {
+                // 출근 전
+                const timeToStart = startTime - currentTime;
+                const hours = Math.floor(timeToStart / 3600);
+                const minutes = Math.floor((timeToStart % 3600) / 60);
+                const seconds = timeToStart % 60;
+                workTimeElement.textContent = `출근까지 ${String(hours).padStart(2, '0')}시 ${String(minutes).padStart(2, '0')}분 ${String(seconds).padStart(2, '0')}초`;
+                workTimeElement.className = 'work-time-remaining';
+            } else if (currentTime >= startTime && currentTime < endTime) {
+                // 근무 시간 중
+                const timeToEnd = endTime - currentTime;
+                const hours = Math.floor(timeToEnd / 3600);
+                const minutes = Math.floor((timeToEnd % 3600) / 60);
+                const seconds = timeToEnd % 60;
+                workTimeElement.textContent = `${String(hours).padStart(2, '0')}시 ${String(minutes).padStart(2, '0')}분 ${String(seconds).padStart(2, '0')}초`;
+                workTimeElement.className = 'work-time-remaining';
+            } else {
+                // 퇴근 후
+                workTimeElement.textContent = '퇴근 완료!';
+                workTimeElement.className = 'work-time-remaining completed';
+            }
+        }
+        
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.querySelector('.theme-toggle');
+            
+            body.classList.toggle('light');
+            
+            if (body.classList.contains('light')) {
+                button.textContent = '🌙';
+            } else {
+                button.textContent = '☀️';
+            }
+        }
+        
+        // 초기 실행
+        updateClock();
+        
+        // 1초마다 업데이트
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
