@@ -19,13 +19,13 @@
             align-items: center;
             min-height: 100vh;
             transition: background-color 0.3s ease, color 0.3s ease;
-            background-color: #1a1a2e;
-            color: #ffffff;
+            background-color: #fff;
+            color: #222;
         }
 
         body.light {
-            background-color: #f5f5f5;
-            color: #333333;
+            background-color: #fff;
+            color: #222;
         }
 
         .clock-container {
@@ -199,13 +199,13 @@
             padding: 12px;
             margin-top: 25px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
         }
 
         body.light .work-time-container {
             background: rgba(0, 0, 0, 0.03);
             border-color: rgba(0, 0, 0, 0.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: none;
         }
 
         .work-time-title {
@@ -293,6 +293,67 @@
             color: inherit;
             cursor: pointer;
             padding: 0 2px;
+        }
+
+        /* 분야별 복지 아코디언 및 화살표 정렬 */
+        .accordion {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            border: none;
+            background: none;
+            font-size: 1em;
+            padding: 12px 0;
+        }
+        .accordion .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            margin-left: 8px;
+        }
+        .accordion-content {
+            display: none;
+            padding: 0 0 8px 0;
+        }
+        .accordion.active + .accordion-content {
+            display: block;
+        }
+
+        /* 링크 영역 스타일 */
+        .welfare-link, .복지링크, .welfare-link-box {
+            display: block;
+            padding: 20px !important;
+            background: #FAFAFA !important;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            color: #222;
+            text-decoration: none;
+            font-size: 1em;
+        }
+
+        /* 달력 스타일 */
+        .calendar-day.selected {
+            border-top: 1px solid #E31B54 !important;
+            background: #FFFDEC !important;
+        }
+        .calendar-day.today {
+            background: #F2F2F2 !important;
+        }
+        .calendar-day .event-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid #dddddd;
+            font-size: 0.9em;
+            color: #E31B54;
+            background: #fff;
         }
     </style>
 </head>
@@ -414,14 +475,17 @@
             
             // 시, 분, 초 가져오기
             const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
             const seconds = now.getSeconds();
             
-            // 각도 계산 (분침 제거)
-            const hourAngle = (hours * 30) + (now.getMinutes() * 0.5); // 시간바늘
+            // 각도 계산
+            const hourAngle = (hours * 30) + (minutes * 0.5); // 시간바늘
+            const minuteAngle = minutes * 6; // 분침
             const secondAngle = seconds * 6; // 초바늘
             
             // 바늘 회전
             document.getElementById('hourHand').style.transform = `rotate(${hourAngle}deg)`;
+            document.getElementById('minuteHand').style.transform = `rotate(${minuteAngle}deg)`;
             document.getElementById('secondHand').style.transform = `rotate(${secondAngle}deg)`;
             
             // 디지털 시간 업데이트
