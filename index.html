@@ -480,7 +480,7 @@
             
             // 각도 계산
             const hourAngle = (hours * 30) + (minutes * 0.5); // 시간바늘
-            const minuteAngle = minutes * 6; // 분침
+            const minuteAngle = (minutes + seconds / 60) * 6; // 분침(초 반영)
             const secondAngle = seconds * 6; // 초바늘
             
             // 바늘 회전
@@ -589,8 +589,10 @@
             
             if (body.classList.contains('light')) {
                 button.textContent = '🌙';
+                button.title = '다크모드로 전환';
             } else {
                 button.textContent = '☀️';
+                button.title = '라이트모드로 전환';
             }
         }
         
