@@ -6,191 +6,219 @@
     <title>아날로그 시계</title>
     <link href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --color-bg-dark: #1e1e2e;
+            --color-bg-light: #fff;
+            --color-text-dark: #fff;
+            --color-text-light: #222;
+            --color-accent: #e74c3c;
+            --color-accent-light: #f5f5f5;
+            --color-border: #ccc;
+            --color-input-bg: #222;
+            --color-input-bg-light: #fff;
+            --color-panel-dark: rgba(30,30,46,0.98);
+            --color-panel-light: rgba(245,245,245,0.98);
+            --color-btn-bg: rgba(0,0,0,0.5);
+            --color-btn-border-dark: rgba(255,255,255,0.3);
+            --color-btn-border-light: rgba(0,0,0,0.3);
+            --btn-radius: 50%;
+            --btn-size: 26px;
+            --btn-font-size: 12px;
+            --panel-radius: 8px;
+            --panel-shadow: 0 2px 12px rgba(0,0,0,0.18);
+            --panel-padding: 10px 10px 8px 10px;
+            --close-btn-size: 22px;
+            --color-minute-marker: #ccc;
+            --color-minute-marker-light: #666;
+            --color-dark-gray: #333;
+            --color-success: #27ae60;
+            --color-btn-hover: #c0392b;
+            --font-size-base: 16px;
+            --font-size-small: 0.95em;
+            --font-size-large: 22px;
+            --font-size-xlarge: 24px;
+            --font-size-date: 18px;
+            --font-size-btn: 12px;
+            --font-size-close: 22px;
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Asta Sans', sans-serif;
+            font-size: var(--font-size-base);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            background-color: #1e1e2e;
-            color: #fff;
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-dark);
+            transition: background-color 0.3s, color 0.3s;
         }
-
         body.light {
-            background-color: #fff;
-            color: #222;
+            background-color: var(--color-bg-light);
+            color: var(--color-text-light);
         }
-
         .clock-container {
             position: relative;
             text-align: center;
         }
-
-        .theme-toggle {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            width: 26px;
-            height: 26px;
+        .top-buttons {
+            position: absolute;
+            top: -32px;
+            left: -12px;
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+        .icon-btn {
+            background: var(--color-btn-bg);
+            border: 1px solid var(--color-btn-border-dark);
+            border-radius: var(--btn-radius);
+            width: var(--btn-size);
+            height: var(--btn-size);
             cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
+            font-size: var(--font-size-btn);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
+            color: var(--color-text-dark);
+            transition: all 0.3s;
         }
-
-        body.light .theme-toggle {
-            background: rgba(0, 0, 0, 0.5);
-            border-color: rgba(0, 0, 0, 0.3);
-            color: #ffffff;
-        }
-
-        .theme-toggle:hover {
+        .icon-btn:hover {
             transform: scale(1.1);
         }
-
+        body.light .icon-btn {
+            background: var(--color-btn-bg);
+            border-color: var(--color-btn-border-light);
+            color: var(--color-text-dark);
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: var(--font-size-close);
+            color: inherit;
+            cursor: pointer;
+            padding: 0 2px;
+            line-height: 1;
+        }
         .clock {
             width: 141px;
             height: 141px;
             border-radius: 50%;
-            border: 1px solid #ffffff;
+            border: 1px solid var(--color-text-dark);
             position: relative;
             margin: 0 auto 22px;
-            transition: all 0.3s ease;
+            transition: border-color 0.3s;
         }
-
         body.light .clock {
-            border-color: #333333;
+            border-color: var(--color-dark-gray);
         }
-
         .clock-face {
             position: absolute;
             width: 100%;
             height: 100%;
         }
-
         .hour-marker {
             position: absolute;
             width: 2.25px;
             height: 11px;
-            background: #ffffff;
+            background: var(--color-text-dark);
             top: 4.5px;
             left: 50%;
             transform-origin: 50% 66px;
             transform: translateX(-50%);
             border-radius: 1.5px;
         }
-
         body.light .hour-marker {
-            background: #333333;
+            background: var(--color-dark-gray);
         }
-
         .minute-marker {
             position: absolute;
             width: 0.75px;
             height: 6.75px;
-            background: #cccccc;
+            background: var(--color-minute-marker);
             top: 6.75px;
             left: 50%;
             transform-origin: 50% 63.75px;
             transform: translateX(-50%);
             border-radius: 0.75px;
         }
-
         body.light .minute-marker {
-            background: #666666;
+            background: var(--color-minute-marker-light);
         }
-
         .hand {
             position: absolute;
             left: 50%;
             bottom: 50%;
             transform-origin: 50% 100%;
             border-radius: 10px;
-            transition: transform 0.1s ease-out;
+            transition: transform 0.1s;
         }
-
         .hour-hand {
             width: 3.75px;
             height: 39.75px;
-            background: #ffffff;
+            background: var(--color-text-dark);
             margin-left: -1.875px;
             z-index: 3;
         }
-
         body.light .hour-hand {
-            background: #333333;
+            background: var(--color-dark-gray);
         }
-
         .minute-hand {
             width: 2.25px;
             height: 51px;
-            background: #ffffff;
+            background: var(--color-text-dark);
             margin-left: -1.125px;
             z-index: 2;
         }
-
         body.light .minute-hand {
-            background: #333333;
+            background: var(--color-dark-gray);
         }
-
         .second-hand {
             width: 1.5px;
             height: 56.25px;
-            background: #e74c3c;
+            background: var(--color-accent);
             margin-left: -0.75px;
             z-index: 4;
         }
-
         .center-dot {
             position: absolute;
             top: 50%;
             left: 50%;
             width: 7.5px;
             height: 7.5px;
-            background: #e74c3c;
+            background: var(--color-accent);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 5;
         }
-
         .digital-time {
             text-align: center;
-            font-size: 22px;
+            font-size: var(--font-size-large);
             font-weight: bold;
             margin-bottom: 8px;
-            color: #ffffff;
+            color: var(--color-text-dark);
             font-family: 'Asta Sans', sans-serif;
             letter-spacing: -0.5px;
         }
-
         body.light .digital-time {
-            color: #333333;
+            color: var(--color-dark-gray);
         }
-
         .digital-date {
             text-align: center;
-            font-size: 18px;
-            color: #cccccc;
+            font-size: var(--font-size-date);
+            color: var(--color-minute-marker);
             margin-bottom: 25px;
             margin-top: 8px;
             font-family: 'Asta Sans', sans-serif;
             letter-spacing: -0.3px;
         }
-
         body.light .digital-date {
-            color: #666666;
+            color: var(--color-minute-marker-light);
         }
-
         .work-time-container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -198,172 +226,129 @@
             border-radius: 15px;
             padding: 12px;
             margin-top: 25px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             box-shadow: none;
         }
-
         body.light .work-time-container {
             background: rgba(0, 0, 0, 0.03);
             border-color: rgba(0, 0, 0, 0.1);
             box-shadow: none;
         }
-
-        .work-time-title {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 8px;
-            font-family: 'Asta Sans', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        body.light .work-time-title {
-            color: rgba(0, 0, 0, 0.6);
-        }
-
         .work-time-remaining {
             font-size: 16px;
             font-weight: bold;
-            color: #e74c3c;
+            color: var(--color-accent);
             font-family: 'Asta Sans', sans-serif;
             letter-spacing: -0.3px;
         }
-
         .work-time-remaining.completed {
-            color: #27ae60;
+            color: var(--color-success);
         }
-
         .number {
             position: absolute;
             font-size: 13.5px;
             font-weight: bold;
-            color: #ffffff;
+            color: var(--color-text-dark);
             transform: translate(-50%, -50%);
             font-family: 'Asta Sans', sans-serif;
         }
-
         body.light .number {
-            color: #333333;
+            color: var(--color-dark-gray);
         }
-
-        /* 시계 숫자 위치 */
-        .number:nth-child(1) { top: 15px; left: 50%; } /* 12 */
-        .number:nth-child(2) { top: 50%; right: 15px; } /* 3 */
-        .number:nth-child(3) { bottom: 15px; left: 50%; } /* 6 */
-        .number:nth-child(4) { top: 50%; left: 15px; } /* 9 */
-
-        .settings-toggle {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            width: 26px;
-            height: 26px;
-            cursor: pointer;
-            font-size: 12px;
+        .number.n12 { top: 15px; left: 50%; }
+        .number.n3 { top: 50%; right: 15px; }
+        .number.n6 { bottom: 15px; left: 50%; }
+        .number.n9 { top: 50%; left: 15px; }
+        .work-progress-bar {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            transition: all 0.3s ease;
+            gap: 2px;
+            margin-top: 4px;
         }
-        .settings-toggle:hover {
-            transform: scale(1.1);
+        .progress-bar-bg {
+            flex: 1;
+            height: 4px;
+            background: #3333;
+            border-radius: 2px;
+            position: relative;
+            display: none;
         }
-        body.light .settings-toggle {
-            background: rgba(0,0,0,0.5);
-            border-color: rgba(0,0,0,0.3);
-            color: #ffffff;
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--color-accent);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s;
         }
+        .progress-bar-percent {
+            font-size: 0.85em;
+            color: var(--color-accent);
+            min-width: 32px;
+            text-align: right;
+        }
+        /* 세팅 패널 */
         #settingsPanel {
-            background: rgba(245,245,245,0.98);
-            color: #222;
+            display: none;
+            position: absolute;
+            top: 28px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: var(--color-panel-dark);
+            border-radius: var(--panel-radius);
+            box-shadow: var(--panel-shadow);
+            padding: var(--panel-padding);
+            z-index: 100;
+            color: var(--color-text-dark);
             font-size: 0.92em;
         }
-        body:not(.light) #settingsPanel {
-            background: rgba(30,30,46,0.98);
-            color: #fff;
+        body.light #settingsPanel {
+            background: var(--color-panel-light);
+            color: var(--color-text-light);
         }
-        #settingsPanel input[type="time"] {
-            font-size: 0.95em;
+        .settings-label {
+            font-size: var(--font-size-small);
+            min-width: 36px;
         }
-        #settingsPanel button[onclick*='toggleSettings'] {
-            background: none;
-            border: none;
-            font-size: 1em;
-            color: inherit;
-            cursor: pointer;
-            padding: 0 2px;
-        }
-
-        /* 분야별 복지 아코디언 및 화살표 정렬 */
-        .accordion {
-            cursor: pointer;
+        .settings-row {
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            border: none;
-            background: none;
-            font-size: 1em;
-            padding: 12px 0;
         }
-        .accordion .arrow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1em;
-            margin-left: 8px;
-        }
-        .accordion-content {
-            display: none;
-            padding: 0 0 8px 0;
-        }
-        .accordion.active + .accordion-content {
-            display: block;
-        }
-
-        /* 링크 영역 스타일 */
-        .welfare-link, .복지링크, .welfare-link-box {
-            display: block;
-            padding: 20px !important;
-            background: #FAFAFA !important;
-            border-radius: 10px;
+        .settings-row:last-child {
             margin-bottom: 10px;
-            color: #222;
-            text-decoration: none;
-            font-size: 1em;
         }
-
-        /* 달력 스타일 */
-        .calendar-day.selected {
-            border-top: 1px solid #E31B54 !important;
-            background: #FFFDEC !important;
+        .settings-save-btn {
+            width: 100%;
+            background: var(--color-accent);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 0;
+            font-size: var(--font-size-small);
+            font-weight: bold;
+            cursor: pointer;
         }
-        .calendar-day.today {
-            background: #F2F2F2 !important;
+        .settings-save-btn:hover {
+            background: var(--color-btn-hover);
         }
-        .calendar-day .event-count {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 4px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 1px solid #dddddd;
-            font-size: 0.9em;
-            color: #E31B54;
-            background: #fff;
+        input[type="time"] {
+            background: var(--color-input-bg);
+            color: var(--color-text-dark);
+            border: 1px solid var(--color-border);
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-size: var(--font-size-small);
+            width: 80%;
         }
     </style>
 </head>
 <body>
     <div class="clock-container">
-        <div style="position: absolute; top: -32px; left: -12px; display: flex; gap: 6px; z-index: 10;">
-            <button class="settings-toggle" onclick="toggleSettings()">⚙️</button>
-            <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+        <div class="top-buttons">
+            <button class="icon-btn settings-toggle" onclick="toggleSettings()" title="설정">⚙️</button>
+            <button class="icon-btn theme-toggle" onclick="toggleTheme()" title="테마">☀️</button>
         </div>
-        
         <div class="clock">
             <div class="clock-face">
                 <!-- 시간 마커 -->
@@ -379,7 +364,6 @@
                 <div class="hour-marker" style="transform: translateX(-50%) rotate(270deg);"></div>
                 <div class="hour-marker" style="transform: translateX(-50%) rotate(300deg);"></div>
                 <div class="hour-marker" style="transform: translateX(-50%) rotate(330deg);"></div>
-
                 <!-- 분 마커 -->
                 <div class="minute-marker" style="transform: translateX(-50%) rotate(6deg);"></div>
                 <div class="minute-marker" style="transform: translateX(-50%) rotate(12deg);"></div>
@@ -429,7 +413,6 @@
                 <div class="minute-marker" style="transform: translateX(-50%) rotate(342deg);"></div>
                 <div class="minute-marker" style="transform: translateX(-50%) rotate(348deg);"></div>
                 <div class="minute-marker" style="transform: translateX(-50%) rotate(354deg);"></div>
-
                 <!-- 시계 바늘 -->
                 <div class="hand hour-hand" id="hourHand"></div>
                 <div class="hand minute-hand" id="minuteHand"></div>
@@ -437,77 +420,65 @@
                 <div class="center-dot"></div>
             </div>
         </div>
-
         <div class="digital-time" id="digitalTime">오후 00시 00분</div>
         <div class="digital-date" id="digitalDate">2025년 6월 11일 수요일</div>
-        
         <div class="work-time-container">
             <div id="workTimeEmoji" style="font-size: 2em; margin-bottom: 2px;"></div>
             <div class="work-time-remaining" id="workTimeRemaining">00시 00분 00초</div>
-            <div style="display: flex; align-items: center; gap: 2px; margin-top: 4px;">
-                <div id="workTimeProgressBar" style="flex: 1; height: 4px; background: #3333; border-radius: 2px; position: relative; display: none;">
-                    <div id="workTimeProgressFill" style="height: 100%; background: #e74c3c; border-radius: 2px; width: 0%; transition: width 0.3s;"></div>
+            <div class="work-progress-bar">
+                <div id="workTimeProgressBar" class="progress-bar-bg">
+                    <div id="workTimeProgressFill" class="progress-bar-fill"></div>
                 </div>
-                <span id="workTimeProgressPercent" style="font-size: 0.85em; color: #e74c3c; min-width: 32px; text-align: right;"></span>
+                <span id="workTimeProgressPercent" class="progress-bar-percent"></span>
             </div>
         </div>
-
         <!-- 세팅 패널 -->
-        <div id="settingsPanel" style="display:none; position: absolute; top: 28px; left: 0; right: 0; width: 100%; background: rgba(30,30,46,0.98); border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); padding: 10px 10px 8px 10px; z-index: 100; color: #fff; font-size: 0.92em;">
-            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 6px;">
-                <button onclick="toggleSettings()" style="background: none; border: none; font-size: 1em; color: #fff; cursor: pointer; padding: 0 2px;">✖️</button>
+        <div id="settingsPanel">
+            <div class="settings-row" style="justify-content: flex-end; margin-bottom: 6px;">
+                <button class="close-btn" onclick="toggleSettings()" title="닫기">✖️</button>
             </div>
-            <div style="margin-bottom: 6px; display: flex; align-items: center;">
-                <label for="startTimeInput" style="font-size: 0.95em; min-width: 36px;">출근:</label>
-                <input type="time" id="startTimeInput" style="margin-left: 4px; padding: 1px 3px; border-radius: 3px; border: 1px solid #ccc; font-size: 0.95em; width: 80%;">
+            <div class="settings-row">
+                <label for="startTimeInput" class="settings-label">출근:</label>
+                <input type="time" id="startTimeInput">
             </div>
-            <div style="margin-bottom: 10px; display: flex; align-items: center;">
-                <label for="endTimeInput" style="font-size: 0.95em; min-width: 36px;">퇴근:</label>
-                <input type="time" id="endTimeInput" style="margin-left: 4px; padding: 1px 3px; border-radius: 3px; border: 1px solid #ccc; font-size: 0.95em; width: 80%">
+            <div class="settings-row">
+                <label for="endTimeInput" class="settings-label">퇴근:</label>
+                <input type="time" id="endTimeInput">
             </div>
-            <button onclick="saveWorkTimes()" style="width: 100%; background: #e74c3c; color: #fff; border: none; border-radius: 4px; padding: 4px 0; font-size: 0.95em; font-weight: bold; cursor: pointer;">저장</button>
+            <button onclick="saveWorkTimes()" class="settings-save-btn">저장</button>
         </div>
     </div>
-
     <script>
         function updateClock() {
             const now = new Date();
-            
             // 시, 분, 초 가져오기
             const hours = now.getHours() % 12;
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
-            
             // 각도 계산
             const hourAngle = (hours * 30) + (minutes * 0.5); // 시간바늘
             const minuteAngle = (minutes + seconds / 60) * 6; // 분침(초 반영)
             const secondAngle = seconds * 6; // 초바늘
-            
             // 바늘 회전
             document.getElementById('hourHand').style.transform = `rotate(${hourAngle}deg)`;
             document.getElementById('minuteHand').style.transform = `rotate(${minuteAngle}deg)`;
             document.getElementById('secondHand').style.transform = `rotate(${secondAngle}deg)`;
-            
             // 디지털 시간 업데이트
             const digitalHours = now.getHours();
             const digitalMinutes = String(now.getMinutes()).padStart(2, '0');
             const ampm = digitalHours >= 12 ? '오후' : '오전';
             const displayHours = digitalHours === 0 ? 12 : digitalHours > 12 ? digitalHours - 12 : digitalHours;
             document.getElementById('digitalTime').textContent = `${ampm} ${String(displayHours).padStart(2, '0')}시 ${digitalMinutes}분`;
-            
             // 날짜 업데이트
             const year = now.getFullYear();
             const month = now.getMonth() + 1;
             const date = now.getDate();
             const dayNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
             const dayName = dayNames[now.getDay()];
-            
             document.getElementById('digitalDate').textContent = `${year}년 ${month}월 ${date}일 ${dayName}`;
-            
             // 퇴근 시간 계산
             updateWorkTime();
         }
-        
         function updateWorkTime() {
             const now = new Date();
             // localStorage에서 출퇴근 시간 불러오기
@@ -517,16 +488,13 @@
             const startTime = startHour * 3600 + startMinute * 60;
             const endTime = endHour * 3600 + endMinute * 60;
             const currentTime = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-            
             const workTimeElement = document.getElementById('workTimeRemaining');
             const emojiElement = document.getElementById('workTimeEmoji');
             const progressBar = document.getElementById('workTimeProgressBar');
             const progressFill = document.getElementById('workTimeProgressFill');
             const progressPercent = document.getElementById('workTimeProgressPercent');
-            
             // 진행률 계산용 변수
             let progressPercentage = 0;
-            
             if (currentTime < startTime) {
                 // 출근 전
                 const timeToStart = startTime - currentTime;
@@ -580,13 +548,10 @@
                 progressPercent.textContent = '';
             }
         }
-        
         function toggleTheme() {
             const body = document.body;
             const button = document.querySelector('.theme-toggle');
-            
             body.classList.toggle('light');
-            
             if (body.classList.contains('light')) {
                 button.textContent = '🌙';
                 button.title = '다크모드로 전환';
@@ -595,20 +560,15 @@
                 button.title = '라이트모드로 전환';
             }
         }
-        
-        // 세팅 패널 토글
         function toggleSettings() {
             const panel = document.getElementById('settingsPanel');
             panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
             if (panel.style.display === 'block') {
-                // 패널 열릴 때 input에 저장값 반영
                 const {start, end} = getWorkTimesFromStorage();
                 document.getElementById('startTimeInput').value = start;
                 document.getElementById('endTimeInput').value = end;
             }
         }
-
-        // 출퇴근 시간 저장 및 불러오기
         function saveWorkTimes() {
             const start = document.getElementById('startTimeInput').value;
             const end = document.getElementById('endTimeInput').value;
@@ -621,17 +581,12 @@
             toggleSettings();
             updateClock();
         }
-
         function getWorkTimesFromStorage() {
             let start = localStorage.getItem('workStartTime') || '08:30';
             let end = localStorage.getItem('workEndTime') || '17:30';
             return {start, end};
         }
-        
-        // 초기 실행
         updateClock();
-        
-        // 1초마다 업데이트
         setInterval(updateClock, 1000);
     </script>
 </body>
